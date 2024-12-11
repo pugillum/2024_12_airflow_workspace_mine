@@ -24,6 +24,7 @@ Implement the following DAG
 - Echo the following messages with a bash operator:
   - “[task] is running in the [dag] pipeline”
 - Print the following messages with a python operator:
-    - “This script was executed at [date]”
-    - “Three days after execution is [date]”
-    - “This script run date is [date]”
+  - “This DAG run was for period [interval_start] to [interval_end]” 
+  - “This DAG run was triggered on [date]”
+
+
