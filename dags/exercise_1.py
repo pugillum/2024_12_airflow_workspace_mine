@@ -1,10 +1,10 @@
-import pendulum
+from datetime import datetime, timedelta
 from airflow.models import DAG
 from airflow.operators.empty import EmptyOperator
 
 with DAG(
-    dag_id="01_Rocket_launch_structure",
-    start_date=pendulum.today("UTC").add(days=-90),
+    dag_id="01_rocket_launch",
+    start_date=datetime.now() - timedelta(days=90),
     schedule="@daily",
     catchup=True,
 ) as dag:
