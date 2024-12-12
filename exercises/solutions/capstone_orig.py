@@ -152,6 +152,6 @@ with DAG(
         >> cloud_file_storage
         >> create_new_BQ_dataset
         >> load_to_bigquery
-        >> create_postgres_table
-        >> store_launch_in_postgres_db
     )
+
+    (local_file_storage >> create_postgres_table >> store_launch_in_postgres_db)
