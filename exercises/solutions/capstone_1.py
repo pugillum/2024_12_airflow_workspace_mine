@@ -15,7 +15,7 @@ with DAG(
 
     is_there_launch_today = EmptyOperator(task_id="is_there_launch_today")
 
-    local_file_storage = EmptyOperator(task_id="local_file_storage")
+    convert_to_parquet = EmptyOperator(task_id="convert_to_parquet")
 
     cloud_file_storage = EmptyOperator(task_id="cloud_file_storage")
 
@@ -27,13 +27,13 @@ with DAG(
 
     store_launch_in_postgres_db = EmptyOperator(task_id="store_launch_in_postgres_db")
 
-    is_api_available >> extract_launch >> is_there_launch_today >> local_file_storage
+    is_api_available >> extract_launch >> is_there_launch_today >> convert_to_parquet
 
     (
-        local_file_storage
+        convert_to_parquet
         >> cloud_file_storage
         >> create_new_BQ_dataset
         >> load_to_bigquery
     )
 
-    local_file_storage >> create_postgres_table >> store_launch_in_postgres_db
+    convert_to_parquet >> create_postgres_table >> store_launch_in_postgres_db

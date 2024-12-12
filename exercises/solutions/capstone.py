@@ -22,7 +22,7 @@ from airflow.providers.google.cloud.transfers.bigquery_to_postgres import (
     BigQueryToPostgresOperator,
 )
 
-PROJECT_NAME = "aflow-training-bol-2023-06-22"
+PROJECT_NAME = ""
 USER_NAME = "ismaelcv"
 LOCAL_STORAGE_PATH = Path("/tmp/launches/")
 GOOGLE_CLOUD_CONN_ID = "google_cloud_default"
