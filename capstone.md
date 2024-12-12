@@ -5,8 +5,7 @@ Your boss recognizes your expertise in rocket science and data analysis, making 
 
 With this information, you connect to the API and embark on an exciting journey to explore the data. As you delve into the API, you uncover a treasure full of details about rocket missions. The API becomes your gateway to the world of space exploration, revealing insights about rockets ids, name, mission names, launch statuses, country information, launch service providers, and their respective types. 
 
-Moving forward, you dive into the exciting task of creating an operator specifically designed to assess whether a rocket launch is scheduled for today. Your boss emphasizes the importance of this operator as it will act as a critical checkpoint in the pipeline. If there are no rocket launches scheduled for the day, your system must halt further execution to avoid processing unnecessary or outdated data. By including this operator, you ensure that your pipeline remains efficient and focused on the most 
-relevant and current information. 
+Moving forward, you dive into the exciting task of creating an operator specifically designed to assess whether a rocket launch is scheduled for today. Your boss emphasizes the importance of this operator as it will act as a critical checkpoint in the pipeline. If there are no rocket launches scheduled for the day, your system must halt further execution to avoid processing unnecessary or outdated data. By including this operator, you ensure that your pipeline remains efficient and focused on the most relevant and current information. 
 
 As you construct the data pipeline, you meticulously design a framework to store the extracted data efficiently. To ensure streamlined access and optimize analysis, you choose to organize the data using parquet files to store daily files with relevant information over the launches. 
 
