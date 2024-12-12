@@ -18,7 +18,7 @@ from airflow.providers.google.cloud.transfers.local_to_gcs import (
 from airflow.providers.http.operators.http import SimpleHttpOperator
 from airflow.providers.http.sensors.http import HttpSensor
 from airflow.providers.postgres.operators.postgres import PostgresOperator
-from airrlow.providers.google.clolud.transrelrs.bigquery_to_postgres import (
+from airflow.providers.google.cloud.transfers.bigquery_to_postgres import (
     BigQueryToPostgresOperator,
 )
 
@@ -28,7 +28,7 @@ LOCAL_STORAGE_PATH = Path("/tmp/launches/")
 GOOGLE_CLOUD_CONN_ID = "google_cloud_default"
 
 
-def _is_launch_today(task_instance):
+def _is_launch_today(task_instance, **context):
     launches = json.loads(task_instance.xcom_pull(task_ids="extract_launch"))
 
     if launches["count"] == 0:
