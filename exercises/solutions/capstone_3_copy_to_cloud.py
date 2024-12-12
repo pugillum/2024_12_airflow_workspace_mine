@@ -1,6 +1,6 @@
 from datetime import datetime
 import json
-from pathlib import Path
+import os
 
 from airflow import DAG
 from airflow.exceptions import AirflowSkipException
@@ -8,6 +8,15 @@ from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import PythonOperator
 from airflow.providers.http.sensors.http import HttpSensor
 from airflow.providers.http.operators.http import SimpleHttpOperator
+from airflow.providers.google.cloud.transfers.local_to_gcs import (
+    LocalFilesystemToGCSOperator,
+)
+
+import pandas as pd
+
+GOOGLE_CLOUD_CONN_ID = "google_cloud_default"
+USER_NAME = "travis"
+PROJECT_NAME = "airflow-training-20241210"
 
 
 def is_launch_today(task_instance, **context):
@@ -17,17 +26,37 @@ def is_launch_today(task_instance, **context):
         raise AirflowSkipException(f"No data found on day {context['ds']}")
 
 
+def extract_relevant_data(x: dict):
+    return {
+        "id": x.get("id"),
+        "name": x.get("name"),
+        "status": x.get("status").get("abbrev"),
+        "country_code": x.get("pad").get("country_code"),
+        "service_provider_name": x.get("launch_service_provider").get("name"),
+        "service_provider_type": x.get("launch_service_provider").get("type"),
+    }
+
+
 def convert_to_parquet(task_instance, **context):
     response = task_instance.xcom_pull(task_ids="extract_launch")
     response_dict = json.loads(response)
     response_results = response_dict["results"]
 
-    with open(f"/tmp/{context['ds']}.json", "w") as f:
-        json.dump(response_results, f)
+    # create /tmp/lauches directory if it does not exist
+    os.makedirs("/tmp/launches", exist_ok=True)
+
+    (
+        pd.DataFrame([extract_relevant_data(i) for i in response_results]).to_parquet(
+            path=f"/tmp/launches/{context['ds']}.parquet"
+        )
+    )
+
+    print(f"Writen to /tmp/launches/{context['ds']}.parquet")
+    print("Files in launches:", os.listdir("/tmp/launches"))
 
 
 with DAG(
-    dag_id="capstone_project_get_api_data",
+    dag_id="capstone_project_copy_to_cloud",
     start_date=datetime(2023, 12, 11),
     end_date=datetime(2023, 12, 16),
     schedule="@daily",
@@ -58,7 +87,13 @@ with DAG(
         python_callable=convert_to_parquet,
     )
 
-    cloud_file_storage = EmptyOperator(task_id="cloud_file_storage")
+    cloud_file_storage = LocalFilesystemToGCSOperator(
+        gcp_conn_id=GOOGLE_CLOUD_CONN_ID,
+        task_id="cloud_file_storage",
+        src="/tmp/launches/{{ds}}.parquet",
+        dst=f"{USER_NAME}" + "/launches/{{ds}}.parquet",
+        bucket=PROJECT_NAME,
+    )
 
     create_new_BQ_dataset = EmptyOperator(task_id="new_dataset_creator")
 
