@@ -4,7 +4,6 @@ import os
 
 from airflow import DAG
 from airflow.exceptions import AirflowSkipException
-from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import PythonOperator
 from airflow.providers.http.sensors.http import HttpSensor
 from airflow.providers.http.operators.http import SimpleHttpOperator
@@ -16,6 +15,10 @@ from airflow.providers.google.cloud.operators.bigquery import (
 )
 from airflow.providers.google.cloud.transfers.gcs_to_bigquery import (
     GCSToBigQueryOperator,
+)
+from airflow.providers.postgres.operators.postgres import PostgresOperator
+from airflow.providers.google.cloud.transfers.bigquery_to_postgres import (
+    BigQueryToPostgresOperator,
 )
 
 import pandas as pd
@@ -37,9 +40,11 @@ def extract_relevant_data(x: dict):
         "id": x.get("id"),
         "name": x.get("name"),
         "status": x.get("status").get("abbrev"),
-        "country_code": x.get("pad").get("country_code"),
+        "country_code": x.get("pad").get("country").get("alpha_2_code"),
         "service_provider_name": x.get("launch_service_provider").get("name"),
-        "service_provider_type": x.get("launch_service_provider").get("type"),
+        "service_provider_type": x.get("launch_service_provider")
+        .get("type")
+        .get("name"),
     }
 
 
@@ -62,7 +67,7 @@ def convert_to_parquet(task_instance, **context):
 
 
 with DAG(
-    dag_id="capstone_project_ingest_into_bq",
+    dag_id="capstone_project_copy_into_postgres",
     start_date=datetime(2023, 12, 11),
     end_date=datetime(2023, 12, 16),
     schedule="@daily",
@@ -119,9 +124,36 @@ with DAG(
         gcp_conn_id=GOOGLE_CLOUD_CONN_ID,
     )
 
-    create_postgres_table = EmptyOperator(task_id="create_postgres_table")
+    create_postgres_table = PostgresOperator(
+        task_id="create_postgres_table",
+        postgres_conn_id="postgres",
+        sql="""
+            CREATE TABLE IF NOT EXISTS rocket_launches (
+                id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                status TEXT NOT NULL,
+                country TEXT NOT NULL,
+                launch_service_provider_name TEXT NOT NULL,
+                launch_service_provider_type TEXT 
+            );
+        """,
+    )
 
-    store_launch_in_postgres_db = EmptyOperator(task_id="store_launch_in_postgres_db")
+    """
+    Remember! To see the data in postgres db:
+        docker ps
+        docker exec -it <db-postgres name> /bin/bash
+        psql -U airflow
+        \dt # see tables
+        SELECT * FROM rocket_launches;
+    """
+
+    store_launch_in_postgres_db = BigQueryToPostgresOperator(
+        task_id="insert_into_postgres_table",
+        dataset_table=f"{USER_NAME}_dataset." + "rocket_launches",
+        target_table_name="rocket_launches",
+        postgres_conn_id="postgres",
+    )
 
     is_api_available >> extract_launch >> is_there_launch_today >> convert_to_parquet
 
