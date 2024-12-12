@@ -1,6 +1,6 @@
 from datetime import datetime
 import json
-from pathlib import Path
+import os
 
 from airflow import DAG
 from airflow.exceptions import AirflowSkipException
@@ -24,6 +24,10 @@ def convert_to_parquet(task_instance, **context):
 
     with open(f"/tmp/{context['ds']}.json", "w") as f:
         json.dump(response_results, f)
+
+    print(f"Data saved to /tmp/{context['ds']}.json")
+    # show files in /tmp
+    print("Files in tmp:", os.listdir("/tmp"))
 
 
 with DAG(
