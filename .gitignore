@@ -142,3 +142,6 @@ slackgpt-*.json
 
 # Vector store
 vectorstore/
+
+# Dev
+tmp
