@@ -34,6 +34,7 @@ with DAG(
         >> cloud_file_storage
         >> create_new_BQ_dataset
         >> load_to_bigquery
+        >> convert_to_parquet
+        >> create_postgres_table
+        >> store_launch_in_postgres_db
     )
-
-    convert_to_parquet >> create_postgres_table >> store_launch_in_postgres_db
