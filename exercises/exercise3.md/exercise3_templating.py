@@ -16,7 +16,8 @@ with DAG(
     schedule_interval="@daily",
 ) as dag:
 
-    def _download_launches(templates_dict, **_):
+    def _download_launches(**context):
+        templates_dict = context["templates_dict"]
         output_path = Path(templates_dict["output_path"])
 
         response = requests.get(
@@ -32,7 +33,7 @@ with DAG(
         with output_path.open("w") as file_:
             json.dump(response.json(), file_)
 
-    def _print_launch_count(**_):
+    def _print_launch_count(**context):
         # TODO: Finish this task. Should load the launch JSON file
         # and print the 'count' field from it's contents.
         raise NotImplementedError()

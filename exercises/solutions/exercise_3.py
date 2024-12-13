@@ -7,10 +7,7 @@ from airflow.models import DAG
 import airflow.utils.dates
 import requests
 
-# Switch to the second URL (the dev endpoint) if you get rate-limited.
-# The data will be old, but at least it will work.
-API_URL = "https://ll.thespacedevs.com/2.2.0/launch"
-# API_URL = "https://lldev.thespacedevs.com/2.2.0/launch"
+API_URL = "https://lldev.thespacedevs.com/2.2.0/launch"
 
 with DAG(
     dag_id="exercise_templating",
@@ -18,7 +15,8 @@ with DAG(
     schedule_interval="@daily",
 ) as dag:
 
-    def _download_launches(templates_dict, **_):
+    def _download_launches(**context):
+        templates_dict = context["templates_dict"]
         output_path = Path(templates_dict["output_path"])
 
         response = requests.get(
@@ -34,8 +32,8 @@ with DAG(
         with output_path.open("w") as file_:
             json.dump(response.json(), file_)
 
-    def _print_launch_count(templates_dict, **_):
-        input_path = templates_dict["input_path"]
+    def _print_launch_count(**context):
+        input_path = context["templates_dict"]["input_path"]
 
         with Path(input_path).open() as file_:
             launches = json.load(file_)
