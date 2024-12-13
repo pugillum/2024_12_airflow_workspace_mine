@@ -85,7 +85,7 @@ with DAG(
             "window_start__gte": "{{data_interval_start|ds}}T00:00:00Z",  # use of data_interval - check if ts can be used and remove the T00:00:00Z
             "window_end__lt": "{{data_interval_end|ds}}T00:00:00Z",
         },
-        log_response=True,
+        log_response=True,  # Can remove
     )
 
     is_there_launch_today = PythonOperator(
