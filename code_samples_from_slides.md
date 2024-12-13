@@ -53,8 +53,8 @@ def print_exec_date(**context):
     print(context["execution_date"])
 
 
-def generate_query(**kwargs):
-    sql_query = kwargs["templates_dict"]["sql_query"]
+def generate_query(**context):
+    sql_query = context["templates_dict"]["sql_query"]
 
     print("Generated SQL Query:")
     print(sql_query)
@@ -84,4 +84,36 @@ with DAG(
     )
 
 ```
+
+# Sensors
+
+```python
+# FTP Sensor
+from airflow.contrib.sensors.ftp_sensor import FTPSensor
+
+wait_for_data = FTPSensor(
+    task_id="wait_for_data",
+    path="foobar.json",
+    ftp_conn_id="bob_ftp",
+)
+
+# Conditional sensor
+from datetime import datetime
+from airflow.sensors.python import PythonSensor
+
+def _time_for_coffee():
+   """I drink coffee between 6 and 12"""
+   if 6 < datetime.now().hour < 12:
+     return True
+   else:
+     return False
+
+time_for_coffee = PythonSensor(
+   task_id="time_for_coffee",
+   python_callable=_time_for_coffee,
+   mode="reschedule",
+)
+
+```
+
 
