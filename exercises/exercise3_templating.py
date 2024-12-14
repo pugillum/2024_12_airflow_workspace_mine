@@ -14,6 +14,7 @@ with DAG(
     dag_id="exercise3_templating",
     start_date=airflow.utils.dates.days_ago(7),
     schedule_interval="@daily",
+    tags=["exercise"],
 ) as dag:
 
     def _download_launches(**context):
