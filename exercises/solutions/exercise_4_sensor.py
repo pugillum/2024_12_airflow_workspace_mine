@@ -1,26 +1,22 @@
 from airflow import DAG
-from airflow.operators.python import PythonOperator
+from airflow.operators.bash import BashOperator
 from airflow.providers.http.sensors.http import HttpSensor
-
-
-# https://httpstat.us/random/200,400
-
-
-def _process_data():
-    print("Processing data...")
-
 
 with DAG(
     dag_id="exercise_4",
     schedule=None,
+    is_paused_upon_creation=False,
+    tags=["exercise"],
 ):
-    is_api_available = HttpSensor(
-        task_id="is_api_available", http_conn_id="http_check", endpoint=""
+    wait_for_api = HttpSensor(
+        task_id="wait_for_api",
+        http_conn_id="http_delayed",
+        endpoint="",
     )
 
-    process_data = PythonOperator(
-        task_id="process_data",
-        python_callable=_process_data,
+    do_something = BashOperator(
+        task_id="do_something",
+        bash_command="echo 'doing something'",
     )
 
-    is_api_available >> process_data
+    wait_for_api >> do_something
