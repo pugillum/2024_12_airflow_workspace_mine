@@ -9,9 +9,13 @@ import requests
 
 API_URL = "https://lldev.thespacedevs.com/2.2.0/launch"
 
+
+default_args = {"owner": "airflow", "retries": 1}
+
 with DAG(
     dag_id="exercise_templating",
     start_date=airflow.utils.dates.days_ago(7),
+    default_args=default_args,
     schedule_interval="@daily",
 ) as dag:
 
