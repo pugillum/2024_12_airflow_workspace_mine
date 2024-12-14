@@ -9,3 +9,4 @@
     ```
 3. Run:
    `airflow dags backfill -s <start date> -e <end date> <dag_name>`
+4. Check the DAG
