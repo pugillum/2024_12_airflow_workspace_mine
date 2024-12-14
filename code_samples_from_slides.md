@@ -169,8 +169,8 @@ def _pull(task_instance, **_):
 with DAG(
     dag_id="example_xcom", start_date=airflow.utils.dates.days_ago(3), schedule="@daily"
 ):
-    push = PythonOperator(task_id="push", python_callable=_push, provide_context=True)
-    pull = PythonOperator(task_id="pull", python_callable=_pull, provide_context=True)
+    push = PythonOperator(task_id="push", python_callable=_push)
+    pull = PythonOperator(task_id="pull", python_callable=_pull)
     push >> pull
 
 ```
