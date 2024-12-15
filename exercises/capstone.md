@@ -21,13 +21,3 @@ To infinity... and beyond! 🧑🏻‍🚀
 
 
 
-PS. Your boss shared these links to help you:
-
-- https://airflow.apache.org/docs/apache-airflow-providers-google/stable/operators/cloud/bigquery.html
-- https://www.restack.io/docs/airflow-knowledge-http-operator-rest-api-example-simple
-- https://github.com/apache/airflow/blob/main/providers/tests/system/http/example_http.py
-- https://airflow.apache.org/docs/apache-airflow/2.2.4/_api/airflow/exceptions/index.html#airflow.exceptions.AirflowSkipException
-- https://airflow.apache.org/docs/apache-airflow-providers-google/6.7.0/_api/airflow/providers/google/cloud/transfers/local_to_gcs/index.html
-- https://airflow.apache.org/docs/apache-airflow-providers-google/10.24.0/operators/cloud/bigquery.html#howto-operator-bigquerycreateemptydatasetoperator
-- 
-
