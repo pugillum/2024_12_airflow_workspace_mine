@@ -42,7 +42,7 @@ with DAG(
     # TODO: Use templating to print the actual logical date.
     print_date = BashOperator(task_id="print_date", bash_command="echo 2021-01-01")
 
-    # TODO: Use date interval start and end to define window start/end + file path.
+    # TODO: Use data interval start and end to define window start/end + file path.
     # Useful https://airflow.apache.org/docs/apache-airflow/stable/templates-ref.html
     # Format for dates should be following: 2021-12-01T00:00:00Z"
     download_launches = PythonOperator(
