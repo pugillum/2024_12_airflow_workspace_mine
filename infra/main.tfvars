@@ -7,4 +7,10 @@ zone            = "europe-west4-c"       # The zone of the project
 
 user_emails = [
   "travis.dent@xebia.com",
+  "maartencvermeulen@gmail.com",
+  "rinusvangrunsven@gmail.com",
+  "loicmacken@gmail.com",
+  "kulamanipradhan0@gmail.com",
+  "tenglebert@bol.com",
+  "yilayda94@gmail.com"
 ]
