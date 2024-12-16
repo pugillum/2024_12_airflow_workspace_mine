@@ -45,7 +45,7 @@ with DAG(
         print(f"""Counted {launches["count"]} launches from {input_path}""")
 
     print_date = BashOperator(
-        task_id="print_date", bash_command="echo {{ execution_date }}"
+        task_id="print_date", bash_command="echo {{ logical_date }}"
     )
 
     download_launches = PythonOperator(

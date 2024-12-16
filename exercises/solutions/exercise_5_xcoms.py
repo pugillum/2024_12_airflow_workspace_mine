@@ -24,16 +24,11 @@ with DAG(
             },
         )
         response.raise_for_status()
-        return response.json()
+        task_instance.xcom_push(key="launches", value=response.json())
 
     def _print_launch_count(task_instance, **_):
 
-        launches = task_instance.xcom_pull(task_ids="download_launches")
-
-        # input_path = context["templates_dict"]["input_path"]
-
-        # with Path(input_path).open() as file_:
-        #     launches = json.load(file_)
+        launches = task_instance.xcom_pull(task_ids="download_launches", key="launches")
 
         print(f"""Counted {launches["count"]} launches""")
 
