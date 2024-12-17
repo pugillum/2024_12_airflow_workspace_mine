@@ -4,7 +4,7 @@ from airflow.models import DAG
 import airflow.utils.dates
 import requests
 
-API_URL = "https://lldev.thespacedevs.com/2.2.0/launch"
+API_URL = "https://lldev.thespacedevs.com/2.3.0/launch"
 
 with DAG(
     dag_id="exercise_5_xcoms",
